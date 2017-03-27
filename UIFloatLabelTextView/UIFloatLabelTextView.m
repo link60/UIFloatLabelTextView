@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 Arthur Ariel Sabintsev. All rights reserved.
 //
 
-#define UI_FLOAT_LABEL_VERTICAL_INSET_OFFSET    8.0f
+#define UI_FLOAT_LABEL_VERTICAL_INSET_OFFSET    10.0f
 
 #import "UIFloatLabelTextView.h"
 
@@ -122,7 +122,7 @@
     _floatLabelActiveColor = [UIColor blueColor];
     
     // animationDuration
-    _floatLabelAnimationDuration = @0.25;
+    _floatLabelAnimationDuration = @0.33;
 }
 
 - (void)setupMenuController
@@ -177,6 +177,7 @@
 #pragma mark - Helpers
 - (void)toggleFloatLabelProperties:(UIFloatLabelAnimationType)animationType
 {
+    [_floatLabel sizeToFit];
     _floatLabel.alpha = (animationType == UIFloatLabelAnimationTypeShow) ? 1.0f : 0.0f;
     CGFloat yOrigin = (animationType == UIFloatLabelAnimationTypeShow) ? -UI_FLOAT_LABEL_VERTICAL_INSET_OFFSET : 0.0f;
     _floatLabel.frame = CGRectMake(_xOrigin,
@@ -204,12 +205,14 @@
     if ([self.text isEqualToString:_placeholder]) {
         self.text = nil;
         self.textColor = _storedTextColor;
+        [self toggleFloatLabel:UIFloatLabelAnimationTypeShow];
     }
 }
 
 - (void)textDidEndEditing:(NSNotification *)notification
 {
     if (![self.text length]) {
+        [self toggleFloatLabel:UIFloatLabelAnimationTypeHide];
         self.text = [self placeholder];
         self.textColor = [self placeholderTextColor];
     }
@@ -226,9 +229,9 @@
         }
         
     } else {
-        if ([_floatLabel alpha]) {
-            [self toggleFloatLabel:UIFloatLabelAnimationTypeHide];
-        }
+        //        if ([_floatLabel alpha]) {
+        //            [self toggleFloatLabel:UIFloatLabelAnimationTypeHide];
+        //        }
         
         _storedText = @"";
     }
@@ -294,7 +297,7 @@
     _floatLabel.textColor = _floatLabelActiveColor;
     _storedText = [self text];
     
-    [self updateRectForTextFieldGeneratedViaAutoLayout];
+    //    [self updateRectForTextFieldGeneratedViaAutoLayout];
     
     return YES;
 }
