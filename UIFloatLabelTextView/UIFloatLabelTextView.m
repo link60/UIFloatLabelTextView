@@ -202,6 +202,10 @@
 #pragma mark - Notifications
 - (void)textDidBeginEditing:(NSNotification *)notification
 {
+    if( ![[notification object] isKindOfClass:[self class]] ) {
+        return;
+    }
+    
     if ([self.text isEqualToString:_placeholder]) {
         self.text = nil;
         self.textColor = _storedTextColor;
@@ -264,13 +268,13 @@
     _floatLabel.textAlignment = textAlignment;
     
     switch (textAlignment) {
-            case NSTextAlignmentRight: {
-                _xOrigin = CGRectGetWidth([self frame]) - CGRectGetWidth([_floatLabel frame]) - _horizontalPadding;
-            } break;
+        case NSTextAlignmentRight: {
+            _xOrigin = CGRectGetWidth([self frame]) - CGRectGetWidth([_floatLabel frame]) - _horizontalPadding;
+        } break;
             
-            case NSTextAlignmentCenter: {
-                _xOrigin = CGRectGetWidth([self frame])/2.0f - CGRectGetWidth([_floatLabel frame])/2.0f;
-            } break;
+        case NSTextAlignmentCenter: {
+            _xOrigin = CGRectGetWidth([self frame])/2.0f - CGRectGetWidth([_floatLabel frame])/2.0f;
+        } break;
             
         default: { // NSTextAlignmentLeft, NSTextAlignmentJustified, NSTextAlignmentNatural
             _xOrigin = _horizontalPadding;
