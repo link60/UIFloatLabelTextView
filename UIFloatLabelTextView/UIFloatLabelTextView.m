@@ -215,6 +215,10 @@
 
 - (void)textDidEndEditing:(NSNotification *)notification
 {
+    if( ![[notification object] isKindOfClass:[self class]] ) {
+        return;
+    }
+    
     if (![self.text length]) {
         [self toggleFloatLabel:UIFloatLabelAnimationTypeHide];
         self.text = [self placeholder];
@@ -224,6 +228,10 @@
 
 - (void)textDidChange:(NSNotification *)notification
 {
+    if( ![[notification object] isKindOfClass:[self class]] ) {
+        return;
+    }
+    
     if ([self.text length]) {
         
         _storedText = [self text];
