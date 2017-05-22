@@ -29,7 +29,7 @@
     if (self) {
         [self setup];
     }
-    
+
     return self;
 }
 
@@ -39,7 +39,7 @@
     if (self) {
         [self setup];
     }
-    
+
     return self;
 }
 
@@ -49,7 +49,7 @@
     if (self) {
         [self setup];
     }
-    
+
     return self;
 }
 
@@ -60,15 +60,15 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UITextViewTextDidChangeNotification
                                                   object:nil];
-    
+
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UITextViewTextDidBeginEditingNotification
                                                   object:nil];
-    
+
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UITextViewTextDidEndEditingNotification
                                                   object:nil];
-    
+
     [self setupMenuController];
 }
 
@@ -77,13 +77,13 @@
 {
     // Build textField
     [self setupTextView];
-    
+
     // Build floatLabel
     [self setupFloatLabel];
-    
+
     // Enable default UIMenuController options
     [self setupMenuController];
-    
+
     // Add listeners to observe textView changes
     [self setupNotifications];
 }
@@ -96,13 +96,13 @@
                                          0.0f,
                                          0.0f,
                                          0.0f);
-    
+
     // Text Alignment
     [self setTextAlignment:NSTextAlignmentLeft];
-    
+
     // Text Color
     _storedTextColor = [UIColor blackColor];
-    
+
     // Placeholder Color
     _placeholderTextColor = [UIColor lightGrayColor];
 }
@@ -120,7 +120,7 @@
     // colors
     _floatLabelPassiveColor = [UIColor lightGrayColor];
     _floatLabelActiveColor = [UIColor blueColor];
-    
+
     // animationDuration
     _floatLabelAnimationDuration = @0.33;
 }
@@ -139,11 +139,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(textDidChange:)
                                                  name:UITextViewTextDidChangeNotification object:nil];
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(textDidBeginEditing:)
                                                  name:UITextViewTextDidBeginEditingNotification object:nil];
-    
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(textDidEndEditing:)
                                                  name:UITextViewTextDidEndEditingNotification object:nil];
@@ -154,24 +154,24 @@
 {
     // Placeholder
     _placeholder = (animationType == UIFloatLabelAnimationTypeShow) ? @"" : [_floatLabel text];
-    
+
     // Reference textAlignment to reset origin of textView and floatLabel
     [self updateTextAlignment];
-    
+
     // Common animation parameters
     UIViewAnimationOptions easingOptions = (animationType == UIFloatLabelAnimationTypeShow) ? UIViewAnimationOptionCurveEaseOut : UIViewAnimationOptionCurveEaseIn;
     UIViewAnimationOptions combinedOptions = UIViewAnimationOptionBeginFromCurrentState | easingOptions;
     void (^animationBlock)(void) = ^{
         [self toggleFloatLabelProperties:animationType];
     };
-    
+
     // Toggle floatLabel visibility via UIView animation
     [UIView animateWithDuration:[_floatLabelAnimationDuration floatValue]
                           delay:0.0f
                         options:combinedOptions
                      animations:animationBlock
                      completion:nil];
-    
+
 }
 
 #pragma mark - Helpers
@@ -189,7 +189,7 @@
 - (void)updateRectForTextFieldGeneratedViaAutoLayout
 {
     [_floatLabel sizeToFit];
-    
+
     // Do not shift the frame if textField is pre-populated
     if (![self.text length]) {
         _floatLabel.frame = CGRectMake(_xOrigin,
@@ -205,7 +205,7 @@
     if( ![[notification object] isKindOfClass:[self class]] ) {
         return;
     }
-    
+
     if ([self.text isEqualToString:_placeholder]) {
         self.text = nil;
         self.textColor = _storedTextColor;
@@ -218,7 +218,7 @@
     if( ![[notification object] isKindOfClass:[self class]] ) {
         return;
     }
-    
+
     if (![self.text length]) {
         [self toggleFloatLabel:UIFloatLabelAnimationTypeHide];
         self.text = [self placeholder];
@@ -231,20 +231,20 @@
     if( ![[notification object] isKindOfClass:[self class]] ) {
         return;
     }
-    
+
     if ([self.text length]) {
-        
+
         _storedText = [self text];
-        
+
         if (![_floatLabel alpha]) {
             [self toggleFloatLabel:UIFloatLabelAnimationTypeShow];
         }
-        
+
     } else {
         //        if ([_floatLabel alpha]) {
         //            [self toggleFloatLabel:UIFloatLabelAnimationTypeHide];
         //        }
-        
+
         _storedText = @"";
     }
 }
@@ -253,7 +253,7 @@
 - (void)setText:(NSString *)text
 {
     [super setText:text];
-    
+
     // When textField is pre-populated, show non-animated version of floatLabel
     if ([text length] && !_storedText && ![text isEqualToString:_placeholder]) {
         [self toggleFloatLabelProperties:UIFloatLabelAnimationTypeShow];
@@ -274,16 +274,16 @@
 {
     NSTextAlignment textAlignment = [self textAlignment];
     _floatLabel.textAlignment = textAlignment;
-    
+
     switch (textAlignment) {
         case NSTextAlignmentRight: {
             _xOrigin = CGRectGetWidth([self frame]) - CGRectGetWidth([_floatLabel frame]) - _horizontalPadding;
         } break;
-            
+
         case NSTextAlignmentCenter: {
             _xOrigin = CGRectGetWidth([self frame])/2.0f - CGRectGetWidth([_floatLabel frame])/2.0f;
         } break;
-            
+
         default: { // NSTextAlignmentLeft, NSTextAlignmentJustified, NSTextAlignmentNatural
             _xOrigin = _horizontalPadding;
         } break;
@@ -295,7 +295,7 @@
 {
     [super layoutSubviews];
     [self updateTextAlignment];
-    
+
     if (![self isFirstResponder] && ![self.text length]) {
         [self toggleFloatLabelProperties:UIFloatLabelAnimationTypeHide];
     }
@@ -305,12 +305,12 @@
 -(BOOL)becomeFirstResponder
 {
     [super becomeFirstResponder];
-    
+
     _floatLabel.textColor = _floatLabelActiveColor;
     _storedText = [self text];
-    
+
     //    [self updateRectForTextFieldGeneratedViaAutoLayout];
-    
+
     return YES;
 }
 
@@ -319,9 +319,9 @@
     if ([_floatLabel.text length]) {
         _floatLabel.textColor = _floatLabelPassiveColor;
     }
-    
+
     [super resignFirstResponder];
-    
+
     return YES;
 }
 
@@ -339,7 +339,7 @@
     } else if (action == @selector(selectAll:)) { // Toggle Select All
         return ([_selectAllEnabled boolValue]) ? YES : NO;
     }
-    
+
     return [super canPerformAction:action withSender:sender];
 }
 
@@ -347,12 +347,12 @@
 - (void)setPlaceholder:(NSString *)placeholder
 {
     _placeholder = placeholder;
-    
+
     _floatLabel.text = _placeholder;
-    if (![self.text length]) {
-        self.text = _placeholder;
-    }
-    
+    // if (![self.text length]) {
+    //     self.text = _placeholder;
+    // }
+
     [_floatLabel sizeToFit];
 }
 
@@ -366,7 +366,7 @@
 {
     _floatLabelFont = floatLabelFont;
     _floatLabel.font = floatLabelFont;
-    
+
     [self updateRectForTextFieldGeneratedViaAutoLayout];
 }
 
