@@ -349,9 +349,9 @@
     _placeholder = placeholder;
 
     _floatLabel.text = _placeholder;
-    // if (![self.text length]) {
-    //     self.text = _placeholder;
-    // }
+    if (![self.text length]) {
+        self.text = _placeholder;
+    }
 
     [_floatLabel sizeToFit];
 }
